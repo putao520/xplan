@@ -10,7 +10,9 @@
   top: 50%;
   left: 50%;
   margin: -160px 0 0 -46.5px;
+  /*
   background-image: url(../images/bg_loading_text.png);
+  */
   background-size: contain;
   background-position: center center;
   background-repeat: no-repeat;
@@ -22,7 +24,9 @@
   width: 302px;
   height: 130px;
   margin: -82px 0 0 -151px;
+  /*
   background-image: url(../images/bg_loading_orbits.png);
+  */
   background-size: 302px 130px;
   background-position: center center;
   background-repeat: no-repeat;

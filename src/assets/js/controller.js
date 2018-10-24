@@ -1,6 +1,7 @@
-import { LOCATIONS } from '@/assets/js/constants'
+import { LOCATIONS, PROVINCELOCATIONS } from '@/assets/js/constants'
 import shuffle from 'lodash.shuffle'
 import TWEEN from 'tween.js'
+import $ from 'jquery'
 
 /* BaseState class */
 class BaseState {
@@ -11,6 +12,8 @@ class BaseState {
   forward () {}
 
   backward () {}
+
+  updateLocations () {}
 }
 
 /**
@@ -64,7 +67,7 @@ class IdleState extends BaseState {
 
 /**
  * RotatingState class
- *
+ * 摩擦地球时触发
  * Forward: if reaches the cameraFarPosition, then move to the next state, which is ZoomingState; otherwise, keep set camera till reaches the target
  * Backward: back to IdleState util the rotation completed
  */
@@ -72,7 +75,7 @@ class RotatingState extends BaseState {
   constructor (controller) {
     super(controller)
     this.tween = null
-    controller.pauseSprite('audio')
+    // controller.pauseSprite('audio')
     controller.earth.controller.enabled = false
   }
 
@@ -80,7 +83,6 @@ class RotatingState extends BaseState {
     let that = this
     let earth = this.controller.earth
     let target = this.controller.target
-
     if (this.tween) {
       TWEEN.update()
     } else {
@@ -108,7 +110,7 @@ class RotatingState extends BaseState {
 
 /**
  * ZoomingState class
- *
+ * 进入touch状态触发
  * Forward: from current camera position to the camera near position of the target, once reach the position, go to the next state, which is DivingState
  * Backward: from current camera position to the camera far position of the target, once reach the position, go to the IdleState
  */
@@ -118,7 +120,7 @@ class ZoomingState extends BaseState {
     this.direction = ''
     this.tween = null
     controller.hideCloud()
-    controller.showEarth()
+    // controller.showEarth()
   }
 
   _setDirection (direction) {
@@ -180,7 +182,7 @@ class ZoomingState extends BaseState {
 
 /**
  * DivingState class
- *
+ * 放大动画结束
  * Forward: from current frame index to the end of frame index, once reach the end, go to the next state, which is PresentingState
  * Backward: from current frame index to the beginning of the frame index, once reach the beginning, go to the previous state, which is DivingState
  */
@@ -188,9 +190,11 @@ class DivingState extends BaseState {
   constructor (controller) {
     super(controller)
     this.count = 0
-    controller.showCloud()
-    controller.hideEarth()
-    controller.hideVideo()
+    if (controller.needCloud) {
+      controller.showCloud()
+    }
+    // controller.hideEarth()
+    // controller.hideVideo()
   }
 
   _throttle (fn) {
@@ -230,7 +234,7 @@ class PresentingState extends BaseState {
   constructor (controller) {
     super(controller)
     controller.hideCloud()
-    controller.showVideo()
+    // controller.showVideo()
   }
 
   backward () {
@@ -241,9 +245,10 @@ class PresentingState extends BaseState {
 /* Controller class */
 export default class Controller {
   constructor (options) {
+    this.needCloud = true
     this.earth = options.earth
     this.cloud = options.cloud
-    this.audioSprite = options.audioSprite
+    // this.audioSprite = options.audioSprite
     this.videoSprite = options.videoSprite
     this.onStateChange = options.onStateChange
     this.onTargetChange = options.onTargetChange
@@ -264,7 +269,11 @@ export default class Controller {
   }
 
   _shuffleTargetList () {
-    this.targetList = shuffle(LOCATIONS.map(location => location.name))
+    var nArray = []
+    for (let k in LOCATIONS) {
+      nArray.push(k)
+    }
+    this.targetList = shuffle(nArray)
   }
 
   _loop () {
@@ -288,12 +297,14 @@ export default class Controller {
     }
   }
 
-  showEarth () {
-    this.earth.container.style.display = 'block'
+  showEarth (fn) {
+    $(this.earth.container).fadeIn(500, fn)
+    // this.earth.container.style.display = 'block'
   }
 
-  hideEarth () {
-    this.earth.container.style.display = 'none'
+  hideEarth (fn) {
+    $(this.earth.container).fadeOut(500, fn)
+    // this.earth.container.style.display = 'none'
   }
 
   showCloud () {
@@ -305,13 +316,29 @@ export default class Controller {
   }
 
   showVideo () {
-    this.playSprite('video')
-    this.videoSprite.media.style.display = 'block'
+    // this.playSprite('video')
+    // this.videoSprite.media.style.display = 'block'
   }
 
   hideVideo () {
-    this.pauseSprite('video')
-    this.videoSprite.media.style.display = 'none'
+    // this.pauseSprite('video')
+    // this.videoSprite.media.style.display = 'none'
+  }
+
+  showText (text, no, fn) {
+    // this.playSprite('video')
+    // this.videoSprite.media.style.display = 'block'
+    // this.showEarth(() => {
+    this.videoSprite.showText(fn, text, no)
+    // })
+  }
+
+  hideText () {
+    // this.pauseSprite('video')
+    // this.videoSprite.media.style.display = 'none'
+    // this.hideEarth(() => {
+    this.videoSprite.hideText()
+    // })
   }
 
   playSprite (type) {
@@ -319,19 +346,23 @@ export default class Controller {
       return
     }
 
+    /*
     if (type === 'video') {
       this.videoSprite.repeat(this.target.name)
     } else if (type === 'audio') {
       this.audioSprite.play(this.target.name)
     }
+    */
   }
 
   pauseSprite (type) {
+    /*
     if (type === 'video') {
       this.videoSprite.pause()
     } else if (type === 'audio') {
       this.audioSprite.pause()
     }
+    */
   }
 
   start () {
@@ -342,16 +373,67 @@ export default class Controller {
     this.touchDown = false
   }
 
+  switchCountry (country) {
+    this.earth.stopAutoRotate()
+    // this.earth.updateLocations(country)
+    this.earth.updateProvinceLocations(country)
+    this.setTarget(LOCATIONS[country])
+    this.touchDown = true
+  }
+  // 空地球
+  initCountry () {
+    this.earth.emptyLocations()
+  }
+  // 包含國家地球
+  resetCountry (reloadLocation, noCloud, noAutoRotate) {
+    this.needCloud = !noCloud
+    if (!noAutoRotate) {
+      this.earth.startAutoRotate()
+    }
+    if (reloadLocation) {
+      // this.earth.initLocations()
+      this.initCountry()
+    }
+    this.touchDown = false
+  }
+  // 隐藏文字版
+  hideTextBan () {
+    this.earth.initLocations()
+    this.hideText()
+  }
+  switchProvince (country, province, no) {
+    this.resetCountry(false, false, true)  // 提前觸發了地球自轉
+    let _this = this
+    setTimeout(() => {
+      this.earth.stopAutoRotate()
+      _this.earth.updateLocations(country, province)
+      _this.setTarget((PROVINCELOCATIONS.hasOwnProperty(country)) ? PROVINCELOCATIONS[country][province] : LOCATIONS[country])
+      this.touchDown = true
+      // 2s后,显示文字后,直接恢复世界地图
+      setTimeout(() => {
+        this.earth.startAutoRotate()
+        let text = province || country
+        this.showText(text, no, () => {
+          this.resetCountry(false, true)
+        })
+      }, 2000)
+    }, 1000)
+  }
   nextTarget () {
-    let nextTargetIndex = (this.targetList.indexOf(this.target ? this.target.name : null) + 1) % this.targetList.length
-    this.setTarget(this.targetList[nextTargetIndex])
+    // let nextTargetIndex = (this.targetList.indexOf(this.target ? this.target.name : null) + 1) % this.targetList.length
+    // this.setTarget(this.targetList[nextTargetIndex])
+    // console.log('asd')
   }
 
-  setTarget (locationName) {
-    this.target = LOCATIONS.filter(location => location.name === locationName)[0]
-    this.playSprite('audio')
-    this.videoSprite.set(locationName)
+  // setTarget (locationName) {
+    // this.target = LOCATIONS[locationName]
+  setTarget (locationObject) {
+    this.target = locationObject
     this.onTargetChange && this.onTargetChange()
+    /*
+    this.playSprite('audio')
+    */
+    this.videoSprite.randomPicture(locationObject)
   }
 
   changeState (stateName) {

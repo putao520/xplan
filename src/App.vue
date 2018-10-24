@@ -3,8 +3,8 @@
     <loading :progress="progress" v-show="loading"></loading>
     <show v-if="!loading"></show>
     <meteor v-if="!loading"></meteor>
-    <background-audio></background-audio>
-    <footer style="position:fixed;z-index:100;bottom:0;width:100%;padding:4px;color:rgba(255,255,255,.7);text-align:center">ygjack414@hotmail.com</footer>
+    <!-- <background-audio></background-audio> -->
+    <footer style="font-size: 10px;position:fixed;z-index:100;bottom:0;width:100%;padding:4px;color:rgba(255,255,255,.7);text-align:center">葡萄软件</footer>
   </div>
 </template>
 
@@ -14,16 +14,18 @@ import Loader from 'resource-loader'
 import Loading from '@/views/Loading'
 import Show from '@/views/Show'
 import Meteor from '@/components/Meteor'
+// import ThreeList from '@/views/WorldArea'
 import { IMAGE_URLS } from '@/assets/js/constants'
-import BackgroundAudio from '@/components/BackgroundAudio'
+// import BackgroundAudio from '@/components/BackgroundAudio'
 
 export default {
   name: 'app',
   components: {
     'loading': Loading,
     'show': Show,
-    'meteor': Meteor,
-    'background-audio': BackgroundAudio
+    'meteor': Meteor
+    // 'background-audio': BackgroundAudio,
+    // 'world-area': ThreeList
   },
 
   data () {
@@ -35,6 +37,7 @@ export default {
 
   mounted () {
     this.initLoader()
+    // this.$refs.worldarea.importJson(TREEJSON)
   },
 
   methods: {

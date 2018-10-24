@@ -4,13 +4,15 @@
 
 <script>
 import MediaSprite from 'media-sprite'
-import { MEDIA_URLS, LOCATIONS } from '@/assets/js/constants'
+import { MEDIA_URLS } from '@/assets/js/constants'
 
 function getSpriteInfo () {
   let spriteInfo = {}
+  /*
   LOCATIONS.forEach(location => {
     spriteInfo[location.name] = location.soundSprite
   })
+  */
   return spriteInfo
 }
 

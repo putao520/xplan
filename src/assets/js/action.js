@@ -14,7 +14,7 @@ export default class Action {
   }
 
   setTarget (name) {
-    this.location = LOCATIONS.filter(l => l.name === name)[0]
+    this.location = LOCATIONS[name]
   }
 
   setDirection (direction) {

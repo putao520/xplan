@@ -7,7 +7,7 @@ import { createAmbientLight, createSpotLight } from './lights'
 import { createEarth } from './earth'
 import { createCloud } from './cloud'
 import { createLocationSprite } from './locations'
-import { PAGE_WIDTH, PAGE_HEIGHT, LOCATIONS } from '@/assets/js/constants'
+import { PAGE_WIDTH, PAGE_HEIGHT, LOCATIONS, PROVINCELOCATIONS } from '@/assets/js/constants'
 
 const WIDTH = PAGE_WIDTH
 const HEIGHT = PAGE_HEIGHT
@@ -25,8 +25,12 @@ export default class Earth {
     this.scene = null
     this.earthGroup = null
     this.locationGroup = null
+    this.locationGroupAll = null
+    this.locastionProvinceSprite = null
     this.cloud = null
     this.hasGlow = false
+
+    this.locationSprite = {}
 
     this.autoRotate = true
     this.rotationSpeed = 0.001
@@ -36,6 +40,7 @@ export default class Earth {
   }
 
   _init () {
+    this._createProvinceLocastions()
     this._createRenderer()
     this._createScene()
     this._createCamera()
@@ -45,7 +50,6 @@ export default class Earth {
     this._createLocations()
     this._createOutGlow()
     this._createController()
-
     this._loop()
   }
 
@@ -75,8 +79,8 @@ export default class Earth {
   _createScene () {
     this.scene = new THREE.Scene()
     this.earthGroup = new THREE.Group()
+    this.locationGroupAll = new THREE.Group()
     this.locationGroup = new THREE.Group()
-
     this.scene.add(this.earthGroup)
     this.earthGroup.add(this.locationGroup)
   }
@@ -93,10 +97,74 @@ export default class Earth {
   }
 
   _createLocations () {
-    LOCATIONS.forEach(location => {
-      let sprite = createLocationSprite(location)
-      this.locationGroup.add(sprite)
-    })
+    // 生成国家标签精灵并渲染
+    for (let v in LOCATIONS) {
+      let sprite = createLocationSprite(LOCATIONS[v])
+      this.locationSprite[v] = sprite
+      this.locationGroupAll.add(sprite)
+    }
+    // this.locationGroup = this.locationGroupAll
+  }
+  _createProvinceLocastions () {
+    // 生成省份标签精灵
+    let provinceLocastionSprite = {}
+    for (let c in PROVINCELOCATIONS) {
+      let pArray = PROVINCELOCATIONS[c]
+      let tempSprite = {}
+      for (let p in pArray) {
+        let obj = pArray[p]
+        tempSprite[obj.name] = createLocationSprite(obj, 40)
+      }
+      provinceLocastionSprite[c] = tempSprite
+    }
+    this.locastionProvinceSprite = provinceLocastionSprite
+  }
+
+  /**
+   * 显示全部国家
+   */
+  initLocations () {
+    this.earthGroup.remove(this.locationGroup)
+    /*
+    this.locationGroup = this.locationGroupAll
+    this.earthGroup.add(this.locationGroup)
+    */
+  }
+
+  emptyLocations () {
+    this.earthGroup.remove(this.locationGroup)
+  }
+
+  /**
+   * 逗号隔开的省份名称
+   * 显示指定的国家
+   * */
+  updateLocations (country, province) {
+    this.earthGroup.remove(this.locationGroup)
+    this.locationGroup.add(this.locastionProvinceSprite.hasOwnProperty(country) ? this.locastionProvinceSprite[country][province] : this.locationSprite[country])
+    this.earthGroup.add(this.locationGroup)
+  }
+
+  /**
+   *逗号隔开的英文国家名称
+   * 显示指定的国家的省,如果没有省信息则显示国家名
+   */
+  updateProvinceLocations (countries) {
+    this.earthGroup.remove(this.locationGroup)
+    var cs = countries.split(',')
+    this.locationGroup = new THREE.Group()
+    for (let i = 0; i < cs.length; i++) {
+      let cName = cs[i]
+      if (this.locastionProvinceSprite.hasOwnProperty(cName)) { // 国家省份数据存在
+        let pArray = this.locastionProvinceSprite[cName]
+        for (let p in pArray) {
+          this.locationGroup.add(pArray[p]) // 添加省份数据到渲染队列
+        }
+      } else {
+        this.locationGroup.add(this.locationSprite[ cName ])
+      }
+    }
+    this.earthGroup.add(this.locationGroup)
   }
 
   _createRenderer () {

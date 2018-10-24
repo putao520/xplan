@@ -1,7 +1,8 @@
 import { IMAGE_URLS } from '@/assets/js/constants'
-const JSAPI_CONFIG_URL = 'http://wx-service.yotta-tech.cn/jsapi/config'
+// const JSAPI_CONFIG_URL = 'http://wx-service.yotta-tech.cn/jsapi/config'
 
 export function initWX () {
+  /*
   fetch(`${JSAPI_CONFIG_URL}?url=${encodeURIComponent(window.location.href)}`, {
     method: 'GET',
     headers: {
@@ -14,6 +15,7 @@ export function initWX () {
   ).then(r => {
     configWX(r.appId, r.timestamp, r.nonceStr, r.signature)
   })
+  */
 }
 
 export function configWX (appId, timestamp, nonceStr, signature) {
