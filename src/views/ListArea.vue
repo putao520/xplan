@@ -1,14 +1,12 @@
 <template>
   <transition name="fade">
   <div class="col" v-show="visable">
-    <!--
     <div class="search bar6">
-      <form>
-        <input type="text" placeholder="请输入..." name="inputdata"  v-model="inputdata" readonly="readonly" >
-        <button type="submit"></button>
+      <form class="searchform">
+        <input class="searchinput" type="text" placeholder="请输入..." name="inputdata"  v-model="inputdata">
+        <button class="searchbutton" type="submit"></button>
       </form>
     </div>
-    -->
     <ul>
       <li v-for="(k,v) in data" v-on:click="selItem($event)" :valuekey="v" >{{k}}</li>
     </ul>
@@ -16,6 +14,30 @@
   </transition>
 </template>
 <style scoped>
+  .searchform {
+    position: relative;
+    margin: 0 auto;
+    height: 100%;
+  }
+
+  .searchinput :focus{
+    color: #b2ff1a;
+  }
+
+  .searchinput {
+    width: 86%;
+    height: 89%;
+    padding-left: 13px;
+    margin: 0 4%;
+    color: #ffffff;
+  }
+
+  .searchbutton {
+    height: 40px;
+    width: 42px;
+    cursor: pointer;
+    position: absolute;
+  }
   .col{
     width: 100%;
     height: 100%;
@@ -43,7 +65,7 @@
   ul{
     width: 80%;
     height: 70%;
-    overflow: scroll;
+    overflow-y: scroll;
     color: white;
   }
  </style>
@@ -53,7 +75,7 @@
   export default {
     data: function () {
       return {
-        inputdata: '',
+        inputdata: 'asd',
         visable: false,
         data: {},
         sel: undefined
