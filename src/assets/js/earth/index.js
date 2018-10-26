@@ -54,7 +54,7 @@ export default class Earth {
   }
 
   _createController () {
-    let controller = new OrbitControls(this.camera)
+    let controller = new OrbitControls(this.camera, document.getElementById('cshow'))
     controller.rotateSpeed = 0.3
     controller.autoRotate = false
     controller.enableZoom = false
@@ -137,10 +137,11 @@ export default class Earth {
 
   /**
    * 逗号隔开的省份名称
-   * 显示指定的国家
+   * 显示指定的省份或者国家
    * */
   updateLocations (country, province) {
     this.earthGroup.remove(this.locationGroup)
+    this.locationGroup = new THREE.Group()
     this.locationGroup.add(this.locastionProvinceSprite.hasOwnProperty(country) ? this.locastionProvinceSprite[country][province] : this.locationSprite[country])
     this.earthGroup.add(this.locationGroup)
   }

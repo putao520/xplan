@@ -8,7 +8,7 @@
       </form>
     </div>
     <ul>
-      <li v-for="(k,v) in data" v-on:click="selItem($event)" :valuekey="v" >{{k}}</li>
+      <li v-for="(k,v) in showData" v-on:click="selItem($event)" :valuekey="v" >{{k}}</li>
     </ul>
   </div>
   </transition>
@@ -75,10 +75,16 @@
   export default {
     data: function () {
       return {
-        inputdata: 'asd',
+        inputdata: '',
         visable: false,
+        showData: {},
         data: {},
         sel: undefined
+      }
+    },
+    watch: {
+      inputdata: function (curVal, oldVal) {
+        this.filter(curVal)
       }
     },
     props: {
@@ -97,17 +103,32 @@
           this.selCallback(this.sel)
         }
       },
+      updateShow (array) {
+        this.showData = array
+      },
       add (key, value) {
         this.data[key] = value
+        this.updateShow(this.data)
       },
       remove (key) {
         delete this.data[key]
+      },
+      filter (key) {
+        let newObj = {}
+        for (let k in this.data) {
+          let val = this.data[k]
+          if (val.startsWith(key)) {
+            newObj[k] = val
+          }
+        }
+        this.updateShow(newObj)
       },
       get (key) {
         return this.data[key]
       },
       clear () {
         this.data = {}
+        this.updateShow(this.data)
       },
       getSel () {
         return this.sel

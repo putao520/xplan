@@ -402,12 +402,12 @@ export default class Controller {
     this.hideText()
   }
   switchProvince (country, province, no) {
-    this.resetCountry(false, false, true)  // 提前觸發了地球自轉
-    let _this = this
+    this.resetCountry(false, false, true)
+    // let _this = this
     setTimeout(() => {
       this.earth.stopAutoRotate()
-      _this.earth.updateLocations(country, province)
-      _this.setTarget((PROVINCELOCATIONS.hasOwnProperty(country)) ? PROVINCELOCATIONS[country][province] : LOCATIONS[country])
+      this.earth.updateLocations(country, province)
+      this.setTarget((PROVINCELOCATIONS.hasOwnProperty(country)) ? PROVINCELOCATIONS[country][province] : LOCATIONS[country])
       this.touchDown = true
       // 2s后,显示文字后,直接恢复世界地图
       setTimeout(() => {

@@ -1,6 +1,6 @@
 <template>
   <page>
-    <div :class="{'c-show': true, 'low-position': isEnd}">
+    <div id="cshow" :class="{'c-show': true, 'low-position': isEnd}">
       <transition name="fade">
         <show-cover v-show="!isEnd" :show-tips="showTips" :show-coord="showCoord" :coord-index="coordIndex"></show-cover>
       </transition>
@@ -109,6 +109,8 @@ export default {
           break
         case 2:// zoom状态(省份,仅仅支持中国)
           this.$options.controller.hideTextBan()
+          this.$refs.worldarea.reset()
+          this.step++
           break
       }
       // this.$options.controller.end()

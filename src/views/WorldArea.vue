@@ -93,6 +93,10 @@ export default {
           this.clickCallback[1](this.sels[0], this.sels[1])
         }
       },
+      reset () {
+        this.$refs.flist.show()
+        this.$refs.slist.hide()
+      },
       // 返回结果值
       result () {
         return this.sels

@@ -182,20 +182,20 @@
   bottom: 30px;
   width: 99px;
   height: 99px;
-  opacity: 0;
+  opacity: 1;
   -webkit-animation: bs linear 2s 1.5s infinite;
   -moz-animation: bs linear 2s 1.5s infinite;
   animation: bs linear 2s 1.5s infinite;
 }
 @keyframes bs {
   0% {
-    box-shadow: inset -1px 1px 3px 2px #444444, inset 1px -1px 3px 2px #222222, 0 0 0px 0 #b2ff1a;
+    box-shadow: inset -1px 1px 3px 2px #536b7b, inset 1px -1px 3px 2px #818ca7, 0 0 0px 0 #2850de;
   }
   50% {
-    box-shadow: inset -1px 1px 3px 2px #444444, inset 1px -1px 3px 2px #222222, 0 0 20px 0 #1affff;
+    box-shadow: inset -1px 1px 3px 2px #a2b7c5, inset 1px -1px 3px 2px #222222, 0 0 20px 0 #678994;
   }
   100% {
-    box-shadow: inset -1px 1px 3px 2px #444444, inset 1px -1px 3px 2px #222222, 0 0 0px 0 #b2ff1a;
+    box-shadow: inset -1px 1px 3px 2px #6f7f8a, inset 1px -1px 3px 2px #7c7f88, 0 0 0px 0 #0c4a8a
   }
 }
 
